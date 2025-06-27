@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>博客列表</title>
+    <style>
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+</head>
+<body>
+<h2>个人博客系统-博客列表</h2>
+<table style="..." rules="rows">
+    <thead>
+    <tr>
+        <th>标题</th>
+        <th>创建时间</th>
+        <th>浏览次数</th>
+        <th>喜欢次数</th>
+    </tr>
+    </thead>
+    <tbody id="list">
+    <tr th:each="blog:${blogs}">
+        <td>
+            <a th:text="${blog.title}" th:href="@{'/blog/'+${blog.id}}"></a>
+            <!-- 超链接，显示博客标题，点击时跳转到博客详情页。@{}：这是 Thymeleaf 的 URL 表达式语法，用于生成 URL -->
+        </td>
+        <td th:text="${blog.publishTime}"></td>
+        <td th:text="${blog.scanCount}"></td>
+        <td th:text="${blog.likeCount}"></td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td>
+            <a th:href="@{'/blog?page=' + ${pageLast} + '&size=' + ${size}}">上一页</a>
+            <!-- 超链接，显示“上一页”，点击时跳转到上一页 -->
+        </td>
+        <td>
+            <a th:href="@{'/blog?page=' + ${pageNext} + '&size=' + ${size}}">下一页</a>
+        </td>
+        <td>当前第<span th:text="${currentPage}"></span>页</td>
+        <td>总共<span th:text="${total}"></span>页</td>
+    </tr>
+    </tfoot>
+</table>
+<hr>
+<a href="/user" th:text="${user != null ? '当前用户: ' + user.phoneNumber : ''}"></a>
+<a href="/login.html" th:text="${user != null ? '' : '未登陆, 去登陆'}"></a>
+<hr>
+</body>
+</html>

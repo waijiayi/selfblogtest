@@ -1,0 +1,22 @@
+# Spring Boot配置文件
+spring:
+  datasource:
+    url: "jdbc:mysql://127.0.0.1:3306/selfblog"
+    username: "root"
+    password: "123456"
+
+  jpa:
+    show-sql: true # 显示SQL语句到控制台，方便调试
+    # Hibernate DDL自动更新策略
+    # update: 启动时检查数据库结构，更新表结构但不删除数据
+    hibernate:
+      ddl-auto: update
+    # Hibernate属性配置
+    properties:
+      hibernate:
+        # 指定数据库方言为MySQL 8，确保Hibernate生成正确的SQL语法
+        database-platform: org.hibernate.dialect.MySQL8Dialect
+    mvc:
+      view:
+        prefix:/templates/
+        suffix:.html

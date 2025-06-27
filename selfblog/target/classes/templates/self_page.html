@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人首页</title>
+    <style>
+        table,table tr th, table tr td { border:1px solid #000000; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2>个人博客系统-个人首页</h2>
+<span th:text="${user !=null ? '用户ID: ' + user.id : ''}"></span>
+<span th:text="${user !=null ? '用户手机号: ' + user.phoneNumber : ''}"></span>
+<hr>
+<h4>修改密码</h4>
+<div>
+    <table>
+        <tr>
+            <td colspan="2"><button onclick="sendSms()">发送验证码</button></td>
+        </tr>
+        <tr>
+            <td>验证码</td>
+            <td><input id="verifyCode" type="text"></td>
+        </tr>
+        <tr>
+            <td>设置密码</td>
+            <td><input id="password" type="password"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button onclick="resetPwd(this)">修改密码</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<hr>
+<input id="phoneNumber" th:value="${user !=null ? user.phoneNumber : ''}"/>
+<script>
+    function sendSms(){
+        var phoneNumber = $("#phoneNumber").val();
+        var param_data = {"phoneNumber" : phoneNumber };
+        $.ajax({
+            type: 'PUT',
+            url: '/login/sms',
+            contentType: 'application/json',
+            withCredentials: true,
+            data: JSON.stringify(param_data),
+            success: function(data){
+                alert("发送验证码成功！ ");
+            },
+            error: function(data){
+                // 失败后执行的代码
+                alert("发送验证码失败！ ");
+                console.log(data);
+                return;
+            }
+        });
+    }
+
+    function resetPwd(){
+        var verifyCode = $("#verifyCode").val();
+        var password = $("#password").val();
+        var param_data = {"verifyCode" : verifyCode, "password" : password };
+        $.ajax({
+            type: 'POST',
+            url: '/user/chpw',
+            contentType: 'application/json',
+            withCredentials: true,
+            data: JSON.stringify(param_data),
+            success: function(data){
+                if("1"==data){
+                    alert("修改成功！ ");
+                }else{
+                    alert("修改失败！ ");
+                }
+            },
+            error: function(data){
+                // 失败后执行的代码
+                alert("登陆失败失败！ ");
+                console.log(data);
+                return;
+            }
+        });
+    }
+</script>
+</body>
+</html>

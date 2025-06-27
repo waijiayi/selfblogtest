@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>博客详情</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2 th:text="${title}"></h2>
+<hr>
+<table>
+    <tr>
+        <td>发布时间: <span th:text="${publishTime}"></span></td>
+        <td width="20px"></td>
+    </tr>
+    <tr>
+        <td>浏览次数: <span th:text="${scanCount}" id="scan_count"></span></td>
+        <td width="20px"></td>
+    </tr>
+    <tr>
+        <td>喜欢次数: <span id="likeCount" th:text="${likeCount}"></span></td>
+        <td width="20px"></td>
+        <td th:if="${hasLiked} != null" id="btnTd">
+            <button th:if="${hasLiked} eq '1'" onclick="dislike()">取消喜欢</button>
+            <button th:if="${hasLiked} eq '0'" onclick="like()">喜欢</button>
+        </td>
+    </tr>
+</table>
+<hr>
+<div th:text="${content}"></div>
+
+<hr>
+<input type="text" th:value="${id}" id="blog_id" style="display:none"></input>
+<script>
+    let blogId = $("#blog_id").val(); // 获取博客ID
+
+    //浏览次数 计数功能
+    $.ajax({
+        type: 'POST',
+        url: '/blog/' + blogId + '/scan', // 请求 URL，包含博客 ID，激活该路径的函数（接口）
+        contentType: 'application/json',
+        withCredentials: true, // 允许跨域请求携带凭据cookie
+        success: function(data){ // 请求成功时的回调函数
+            $("#scan_count").text(data); // 更新浏览次数显示
+        },
+        error: function(data){
+            // 失败后执行的代码
+            alert("浏览计数失败！");
+            console.log(data);
+            return;
+        }
+    });
+    // 点赞功能
+    function like() {  // 显示用法
+        $.ajax({
+            type: 'POST',
+            url: '/blog/' + blogId + '/like',
+            withCredentials: true,
+            success: function(data){
+                if("1" == data){
+                    let likeCountSpan = $("#likeCount");
+                    likeCountSpan.text( parseInt(likeCountSpan.text()) + 1 );
+                    $("#btnTd").html('<button onclick="disLike()">取消喜欢</button>');
+                }
+            },
+            error: function(data){
+                // 失败后执行的代码
+                alert("发布评论失败！如未登陆，请先登陆！");
+                console.log(data);
+                return;
+            }
+        });
+    }
+    // 取消点赞功能
+    function dislike() {  // 显示用法
+        $.ajax({
+            type: 'POST',
+            url: '/blog/' + blogId + '/dislike',
+            withCredentials: true,
+            success: function(data){
+                if("1" == data){
+                    let likeCountSpan = $("#likeCount");
+                    likeCountSpan.text( parseInt(likeCountSpan.text()) - 1 );
+                    $("#btnTd").html('<button onclick="like()">喜欢</button>');
+                }
+            },
+            error: function(data){
+                // 失败后执行的代码
+                alert("发布评论失败！如未登陆，请先登陆！");
+                console.log(data);
+                return;
+            }
+        });
+    }
+</script>
+</body>
+</html>
