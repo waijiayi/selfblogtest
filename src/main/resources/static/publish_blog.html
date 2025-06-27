@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发布博客</title>
+    <!-- 确保 jQuery 库的路径正确 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>个人博客系统-发布博客</h1>
+<div>
+    <table>
+        <tr>
+            <td>博客标题</td>
+            <td><input id="title" type="text"></td>
+        </tr>
+        <tr>
+            <td>博客内容</td>
+            <td><textarea id="content" rows="20" cols="60"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button onclick="publish(this)">保存</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    function publish() {
+        var title = $("#title").val();  // 使用 jQuery 获取 ID 为“title”的输入框的值（博客标题）
+        var content = $("#content").val(); // 创建一个 JavaScript 对象，包含标题和内容
+        var param_data = {"title" : title, "content" : content };
+        $.ajax({  // 使用 jQuery 的 AJAX 方法发送 HTTP 请求到后台
+            type: 'PUT',  // 请求类型为 PUT
+            url: '/blog',  // 请求的 URL 路径
+            contentType: 'application/json', // 请求的内容类型为 JSON
+            withCredentials: true,  // 发送凭据（如 cookies）
+            data: JSON.stringify(param_data),// 将 JavaScript 对象转换为 JSON 字符串并作为请求数据
+            success: function(data){
+                // 请求成功时的回调函数
+                alert("发布博客成功！");// 弹出提示框，显示“发布博客成功！”
+            },
+            error: function(data){
+                // 失败后执行的代码
+                alert("发布博客失败！");
+                console.log(data);
+                return;
+            }
+        });
+    }
+</script>
+</body>
+</html>
